@@ -1,0 +1,38 @@
+import java.util.Scanner;
+
+public class TrajectoryModeling {
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.println("Enter a distance to target: ");
+        double targetDistance = scanner.nextDouble();
+
+        double bestAngle = 0;
+        double bestSpeed = 0;
+        double closestDistance = Double.MAX_VALUE;
+         
+        for (double angle = 25.0; angle <= 90.0; angle += 5.0) {
+            for (double speed = 1.0; speed <= 30.0; speed += 1.0) {
+                double radians = Math.toRadians(angle);
+                double airTime = (2 * speed * Math.sin(radians)) / 9.8;
+                double distance = speed * airTime * Math.cos(radians);
+                double distanceMissed = Math.abs(distance - targetDistance);
+
+                if (distanceMissed < closestDistance) {
+                    closestDistance = distanceMissed;
+                    bestAngle = angle;
+                    bestSpeed = speed;
+                } else if (distanceMissed == closestDistance && angle > bestAngle) {
+                    bestAngle = angle;
+                    bestSpeed = speed;
+                }
+            }
+        }
+
+        double finalDistance = bestSpeed * ((2 * bestSpeed * Math.sin(Math.toRadians(bestAngle))) / 9.8) * Math.cos(Math.toRadians(bestAngle));
+        System.out.format("Best angle: %.2f%n", bestAngle);
+        System.out.format("Best speed: %.2f%n", bestSpeed);
+        System.out.format("Distance travelled: %.2f%n", finalDistance);
+        System.out.format("Missed the target center by: %.2f%n", closestDistance);
+    }
+}
